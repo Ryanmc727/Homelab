@@ -1,0 +1,27 @@
+- logo:
+    icon: /images/homelab-logo.svg
+
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+    expanded: true
+    cacheInterval: 5
+
+- openmeteo:
+    label: Local Weather
+    latitude: 27.7676
+    longitude: -82.6403
+    timezone: America/New_York
+    units: imperial
+    cache: 5
+
+- datetime:
+    format:
+      timeStyle: short
+      dateStyle: short
+      hour12: true
+
+- search:
+    provider: duckduckgo
+    target: _blank

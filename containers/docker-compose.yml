@@ -1,0 +1,476 @@
+networks:
+  monitoring:
+    driver: bridge
+  kali-lab_default:
+    driver: bridge
+  netdata_default:
+    driver: bridge
+
+volumes:
+  portainer_data:
+  maybe_postgres_data:
+
+services:
+
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    network_mode: host
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - /opt/homelab/npm/data:/data
+      - /opt/homelab/npm/letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+
+  suricata:
+    image: jasonish/suricata:latest
+    container_name: suricata
+    network_mode: host
+    command: -i eno1
+    environment:
+      - TZ=America/New_York
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - /opt/homelab/suricata/logs:/var/log/suricata
+      - /opt/homelab/suricata/rules:/var/lib/suricata
+      - /opt/homelab/suricata/run:/var/run/suricata
+      - /opt/homelab/suricata/config:/etc/suricata
+    restart: unless-stopped
+
+  evebox:
+    image: jasonish/evebox
+    container_name: evebox
+    command: --host 0.0.0.0 --no-tls --no-authentication --database sqlite --input /var/log/suricata/eve.json
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "127.0.0.1:5636:5636"
+    volumes:
+      - /opt/homelab/evebox:/data
+      - /opt/homelab/suricata/logs:/var/log/suricata:ro
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      - suricata
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "YOUR_SERVER_IP:53:53/tcp"
+      - "YOUR_SERVER_IP:53:53/udp"
+      - "127.0.0.1:8088:80"
+    volumes:
+      - /opt/homelab/pihole/etc-pihole:/etc/pihole
+      - /opt/homelab/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    command: -config.file=/etc/loki/loki.yaml
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "127.0.0.1:3100:3100"
+    volumes:
+      - /opt/homelab/loki/config:/etc/loki
+      - /opt/homelab/loki/data:/loki
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - /var/log:/var/log/host:ro
+      - /opt/homelab/promtail:/etc/promtail
+      - /opt/homelab/suricata/logs:/var/log/suricata:ro
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - TZ=America/New_York
+      - GF_DEFAULT_TIMEZONE=America/New_York
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - "127.0.0.1:3003:3000"
+    volumes:
+      - /opt/homelab/grafana/data:/var/lib/grafana
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      - loki
+
+  grafana-ntfy:
+    image: grafana-ntfy-bridge
+    container_name: grafana-ntfy
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "127.0.0.1:8585:8080"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  ntfy:
+    image: binwiederhier/ntfy
+    container_name: ntfy
+    command: serve
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "127.0.0.1:3004:80"
+    volumes:
+      - /opt/homelab/ntfy:/var/lib/ntfy
+      - /opt/homelab/ntfy/server.yml:/etc/ntfy/server.yml:ro
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  ntopng:
+    image: ntop/ntopng:latest
+    container_name: ntopng
+    network_mode: host
+    command: --http-port=127.0.0.1:3005 -d /var/lib/ntopng --disable-login=1
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - /opt/homelab/ntopng/data:/var/lib/ntopng
+    restart: unless-stopped
+
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "127.0.0.1:19999:19999"
+    volumes:
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+    networks:
+      - netdata_default
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    restart: always
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    network_mode: host
+    environment:
+      - TZ=America/New_York
+      - PORT=3001
+      - HOMEPAGE_ALLOWED_HOSTS=home.yourdomain.com
+    volumes:
+      - /opt/homelab/homepage/config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "127.0.0.1:3002:3001"
+    volumes:
+      - /opt/homelab/uptime-kuma/data:/app/data
+    networks:
+      - monitoring
+      - netdata_default
+      - kali-lab_default
+    restart: unless-stopped
+
+  kali_desktop:
+    image: lscr.io/linuxserver/kali-linux:latest
+    container_name: kali_desktop
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "127.0.0.1:3008:3000"
+    volumes:
+      - /opt/homelab/kali/config:/config
+    networks:
+      - kali-lab_default
+    restart: "no"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    environment:
+      - TZ=America/New_York
+      - DOCKER_API_VERSION=1.45
+      - WATCHTOWER_SCHEDULE=0 0 3 * * *
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "127.0.0.1:9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - monitoring
+    dns:
+      - YOUR_SERVER_IP
+    extra_hosts:
+      - "auth.yourdomain.com:YOUR_SERVER_IP"
+    restart: always
+
+  authentik-postgresql:
+    image: docker.io/library/postgres:16-alpine
+    container_name: authentik-postgresql
+    environment:
+      - TZ=America/New_York
+      - POSTGRES_PASSWORD=${AUTHENTIK_PG_PASS}
+      - POSTGRES_USER=authentik
+      - POSTGRES_DB=authentik
+    volumes:
+      - /opt/homelab/authentik/postgres:/var/lib/postgresql/data
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+
+  authentik-redis:
+    image: docker.io/library/redis:alpine
+    container_name: authentik-redis
+    command: --save 60 1 --loglevel warning
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - /opt/homelab/authentik/redis:/data
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+
+  authentik-server:
+    image: ghcr.io/goauthentik/server:latest
+    container_name: authentik-server
+    command: server
+    extra_hosts:
+      - "auth.yourdomain.com:YOUR_SERVER_IP"
+      - "home.yourdomain.com:YOUR_SERVER_IP"
+      - "grafana.yourdomain.com:YOUR_SERVER_IP"
+      - "portainer.yourdomain.com:YOUR_SERVER_IP"
+      - "evebox.yourdomain.com:YOUR_SERVER_IP"
+      - "netdata.yourdomain.com:YOUR_SERVER_IP"
+      - "ntopng.yourdomain.com:YOUR_SERVER_IP"
+      - "npm.yourdomain.com:YOUR_SERVER_IP"
+      - "pihole.yourdomain.com:YOUR_SERVER_IP"
+      - "uptime.yourdomain.com:YOUR_SERVER_IP"
+      - "kali.yourdomain.com:YOUR_SERVER_IP"
+      - "ops.yourdomain.com:YOUR_SERVER_IP"
+      - "ntfy.yourdomain.com:YOUR_SERVER_IP"
+      - "maybe.yourdomain.com:YOUR_SERVER_IP"
+    environment:
+      - TZ=America/New_York
+      - AUTHENTIK_REDIS__HOST=authentik-redis
+      - AUTHENTIK_POSTGRESQL__HOST=authentik-postgresql
+      - AUTHENTIK_POSTGRESQL__USER=authentik
+      - AUTHENTIK_POSTGRESQL__NAME=authentik
+      - AUTHENTIK_POSTGRESQL__PASSWORD=${AUTHENTIK_PG_PASS}
+      - AUTHENTIK_SECRET_KEY=${AUTHENTIK_SECRET_KEY}
+      - AUTHENTIK_ERROR_REPORTING__ENABLED=false
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9444:9443"
+    volumes:
+      - /opt/homelab/authentik/media:/media
+      - /opt/homelab/authentik/templates:/templates
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      authentik-postgresql:
+        condition: service_healthy
+      authentik-redis:
+        condition: service_healthy
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:latest
+    container_name: authentik-worker
+    command: worker
+    extra_hosts:
+      - "auth.yourdomain.com:YOUR_SERVER_IP"
+      - "home.yourdomain.com:YOUR_SERVER_IP"
+      - "grafana.yourdomain.com:YOUR_SERVER_IP"
+      - "portainer.yourdomain.com:YOUR_SERVER_IP"
+      - "evebox.yourdomain.com:YOUR_SERVER_IP"
+      - "netdata.yourdomain.com:YOUR_SERVER_IP"
+      - "ntopng.yourdomain.com:YOUR_SERVER_IP"
+      - "npm.yourdomain.com:YOUR_SERVER_IP"
+      - "pihole.yourdomain.com:YOUR_SERVER_IP"
+      - "uptime.yourdomain.com:YOUR_SERVER_IP"
+      - "kali.yourdomain.com:YOUR_SERVER_IP"
+      - "ops.yourdomain.com:YOUR_SERVER_IP"
+      - "ntfy.yourdomain.com:YOUR_SERVER_IP"
+      - "maybe.yourdomain.com:YOUR_SERVER_IP"
+    environment:
+      - TZ=America/New_York
+      - AUTHENTIK_REDIS__HOST=authentik-redis
+      - AUTHENTIK_POSTGRESQL__HOST=authentik-postgresql
+      - AUTHENTIK_POSTGRESQL__USER=authentik
+      - AUTHENTIK_POSTGRESQL__NAME=authentik
+      - AUTHENTIK_POSTGRESQL__PASSWORD=${AUTHENTIK_PG_PASS}
+      - AUTHENTIK_SECRET_KEY=${AUTHENTIK_SECRET_KEY}
+      - AUTHENTIK_ERROR_REPORTING__ENABLED=false
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/homelab/authentik/media:/media
+      - /opt/homelab/authentik/certs:/certs
+      - /opt/homelab/authentik/templates:/templates
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      authentik-postgresql:
+        condition: service_healthy
+      authentik-redis:
+        condition: service_healthy
+
+  maybe:
+    image: ghcr.io/maybe-finance/maybe:latest
+    container_name: maybe
+    environment:
+      - TZ=America/New_York
+      - SELF_HOSTED=true
+      - RAILS_FORCE_SSL=false
+      - RAILS_ASSUME_SSL=true
+      - GOOD_JOB_EXECUTION_MODE=async
+      - SECRET_KEY_BASE=${MAYBE_SECRET_KEY_BASE}
+      - DATABASE_URL=postgresql://maybe:${MAYBE_DB_PASS}@maybe-postgres:5432/maybe_production
+      - REDIS_URL=redis://maybe-redis:6379/1
+      - PLAID_CLIENT_ID=${PLAID_CLIENT_ID}
+      - PLAID_SECRET=${PLAID_SECRET}
+      - PLAID_ENV=${PLAID_ENV:-development}
+    ports:
+      - "127.0.0.1:3010:3000"
+    volumes:
+      - /opt/homelab/maybe/storage:/rails/storage
+    networks:
+      - monitoring
+    depends_on:
+      maybe-postgres:
+        condition: service_healthy
+      maybe-redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  maybe-redis:
+    image: redis:7-alpine
+    container_name: maybe-redis
+    command: --save 60 1 --loglevel warning
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - /opt/homelab/maybe/redis:/data
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 10s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+
+  maybe-postgres:
+    image: postgres:16-alpine
+    container_name: maybe-postgres
+    environment:
+      - TZ=America/New_York
+      - POSTGRES_DB=maybe_production
+      - POSTGRES_USER=maybe
+      - POSTGRES_PASSWORD=${MAYBE_DB_PASS}
+    volumes:
+      - maybe_postgres_data:/var/lib/postgresql/data
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d maybe_production -U maybe"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+
+  homelab-ops:
+    image: homelab-ops:latest
+    build:
+      context: /opt/homelab/ops
+    container_name: homelab-ops
+    environment:
+      - TZ=America/New_York
+      - EVE_LOG=/var/log/suricata/eve.json
+      - PIHOLE_URL=http://pihole:80
+      - PIHOLE_KEY_FILE=/run/secrets/pihole_api_key
+      - PIHOLE_PASSWORD=${PIHOLE_PASSWORD}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - NETDATA_URL=http://netdata:19999
+    ports:
+      - "127.0.0.1:3009:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/homelab/suricata/logs:/var/log/suricata:ro
+      - /opt/homelab/pihole/etc-pihole/cli_pw:/run/secrets/pihole_api_key:ro
+      - /var/log:/var/log/host:ro
+    networks:
+      - monitoring
+      - netdata_default
+    restart: unless-stopped

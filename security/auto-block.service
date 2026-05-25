@@ -1,0 +1,17 @@
+[Unit]
+Description=Homelab Auto-Block Daemon
+After=network.target docker.service suricata.service
+Wants=suricata.service
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 /opt/homelab/security/auto-block.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=homelab-auto-block
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,24 @@
+services:
+  opencanary:
+    build: .
+    container_name: opencanary
+    image: opencanary-homelab:latest
+    restart: unless-stopped
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - ./logs:/var/log/opencanary
+    networks:
+      honeypot-lan:
+        ipv4_address: YOUR_HONEYPOT_IP
+
+networks:
+  honeypot-lan:
+    driver: macvlan
+    driver_opts:
+      parent: eno1
+    ipam:
+      config:
+        - subnet: YOUR_LAN_SUBNET
+          gateway: YOUR_ROUTER_IP
+          ip_range: YOUR_HONEYPOT_IP/32

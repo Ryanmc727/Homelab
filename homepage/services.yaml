@@ -1,0 +1,103 @@
+- Infrastructure:
+    - Nginx Proxy Manager:
+        icon: nginx-proxy-manager.png
+        href: https://npm.yourdomain.com
+        description: Reverse Proxy & SSL
+        server: my-docker
+        container: nginx-proxy-manager
+
+    - Portainer:
+        icon: portainer.png
+        href: https://portainer.yourdomain.com
+        description: Docker Management
+        server: my-docker
+        container: portainer
+
+    - Grafana:
+        icon: grafana.png
+        href: https://grafana.yourdomain.com
+        description: Logs & Dashboards
+        server: my-docker
+        container: grafana
+
+    - ntfy:
+        icon: ntfy.png
+        href: https://ntfy.yourdomain.com
+        description: Push Notifications
+        server: my-docker
+        container: ntfy
+
+    - Uptime Kuma:
+        icon: uptime-kuma.png
+        href: https://uptime.yourdomain.com
+        description: Service Uptime
+        server: my-docker
+        container: uptime-kuma
+
+    - Cockpit:
+        icon: sh-cockpit
+        href: https://cockpit.yourdomain.com
+        description: Ubuntu Server Management
+
+    - Netdata:
+        icon: netdata.png
+        href: https://netdata.yourdomain.com
+        description: System Monitoring
+        server: my-docker
+        container: netdata
+        widget:
+          type: netdata
+          url: http://YOUR_SERVER_IP:19999
+
+- Security:
+    - Suricata IDS:
+        icon: suricata.png
+        href: https://grafana.yourdomain.com/d/suricata-homelab/suricata-ids-e28094-gulf-wave
+        description: IDS Alert Dashboard
+        server: my-docker
+        container: suricata
+
+    - Server Security:
+        icon: sh-security
+        href: https://grafana.yourdomain.com/d/homelab-security/server-security-e28094-gulf-wave
+        description: SSH & Auth Monitoring
+
+    - EveBox:
+        icon: https://evebox.org/images/evebox.svg
+        href: https://evebox.yourdomain.com
+        description: Suricata Alert Triage
+        server: my-docker
+        container: evebox
+
+    - CrowdSec:
+        icon: si-crowdsec
+        href: https://app.crowdsec.net
+        description: Security Engine
+
+    - Pi-hole:
+        icon: pi-hole.png
+        href: https://pihole.yourdomain.com
+        description: DNS Ad Blocking
+        server: my-docker
+        container: pihole
+
+- Network:
+    - ntopng:
+        icon: ntop.png
+        href: https://ntopng.yourdomain.com
+        description: Network Traffic & Device Monitor
+        server: my-docker
+        container: ntopng
+
+    - TP-Link Archer:
+        icon: tp-link.png
+        href: http://homelab.tplinkdns.com
+        description: Router Admin
+
+- Tools:
+    - Kali Desktop:
+        icon: si-kalilinux
+        href: https://kali.yourdomain.com
+        description: Kali Linux Browser Desktop
+        server: my-docker
+        container: kali_desktop

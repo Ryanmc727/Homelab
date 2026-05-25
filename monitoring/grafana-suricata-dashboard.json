@@ -1,0 +1,933 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "id": 1888253324201984,
+  "panels": [
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794F2",
+            "mode": "fixed"
+          },
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794F2",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"suricata\"}[$__range]))",
+          "legendFormat": "",
+          "queryType": "instant"
+        }
+      ],
+      "title": "Total Alerts",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#F2495C",
+            "mode": "fixed"
+          },
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#F2495C",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"suricata\"} |~ \"\\\\[Priority: 1\\\\]\" [$__range]))",
+          "legendFormat": "",
+          "queryType": "instant"
+        }
+      ],
+      "title": "Priority 1 Critical",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#FF9830",
+            "mode": "fixed"
+          },
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#FF9830",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"suricata\"} |~ \"\\\\[Priority: 2\\\\]\" [$__range]))",
+          "legendFormat": "",
+          "queryType": "instant"
+        }
+      ],
+      "title": "Priority 2 High",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#73BF69",
+            "mode": "fixed"
+          },
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"suricata\"} |~ \"\\\\[Priority: 3\\\\]\" [$__range]))",
+          "legendFormat": "",
+          "queryType": "instant"
+        }
+      ],
+      "title": "Priority 3 Info",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineWidth": 2,
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "P1 \u2014 Critical"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2495C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "P2 \u2014 High"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#FF9830",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "P3 \u2014 Info"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#73BF69",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"suricata\"} |~ \"\\\\[Priority: 1\\\\]\" [$__interval]))",
+          "legendFormat": "P1 \u2014 Critical",
+          "queryType": "range"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"suricata\"} |~ \"\\\\[Priority: 2\\\\]\" [$__interval]))",
+          "legendFormat": "P2 \u2014 High",
+          "queryType": "range"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"suricata\"} |~ \"\\\\[Priority: 3\\\\]\" [$__interval]))",
+          "legendFormat": "P3 \u2014 Info",
+          "queryType": "range"
+        }
+      ],
+      "title": "Alert Rate Over Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left"
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alert"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Alert"
+              },
+              {
+                "id": "custom.width",
+                "value": 430
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Count"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-BlYlRd"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 14,
+        "x": 0,
+        "y": 12
+      },
+      "id": 6,
+      "options": {
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Value"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum by (alert) (count_over_time({job=\"suricata\"} | regexp `\\[\\*\\*\\] \\[\\d+:\\d+:\\d+\\] (?P<alert>.+?) \\[\\*\\*\\]` [$__range]))",
+          "legendFormat": "",
+          "queryType": "instant"
+        }
+      ],
+      "title": "Top Alert Types",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": [
+              {
+                "desc": true,
+                "displayName": "Value"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 10,
+        "x": 14,
+        "y": 12
+      },
+      "id": 7,
+      "options": {
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum by (protocol) (count_over_time({job=\"suricata\"} | regexp `\\{(?P<protocol>[A-Z]+)\\}` | protocol != \"\" [$__interval]))",
+          "legendFormat": "{{protocol}}",
+          "queryType": "range"
+        }
+      ],
+      "title": "Protocol Distribution",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "sum"
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "Field": "Protocol",
+              "sum": "Count"
+            }
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left"
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "src_ip"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Source IP"
+              },
+              {
+                "id": "custom.width",
+                "value": 180
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Alerts"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-BlYlRd"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 8,
+      "options": {
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Value"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum by (src_ip) (count_over_time({job=\"suricata\"} | regexp `\\{[A-Z]+\\} (?P<src_ip>[0-9.]+):\\d+ ->` [$__range]))",
+          "legendFormat": "",
+          "queryType": "instant"
+        }
+      ],
+      "title": "Top Source IPs",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": [
+              {
+                "desc": true,
+                "displayName": "Value"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 9,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "pie",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum by (classification) (count_over_time({job=\"suricata\"} | regexp `\\[Classification: (?P<classification>[^\\]]+)\\]` [$__interval]))",
+          "legendFormat": "{{classification}}",
+          "queryType": "range"
+        }
+      ],
+      "title": "Alert Classification",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "sum"
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "Field": "Classification",
+              "sum": "Count"
+            }
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 10,
+      "options": {
+        "content": "## Alert Classifications\n\n| Classification | Risk | Action |\n|---|---|---|\n| **Web Application Attack** | \ud83d\udd34 High | External probe/exploit attempt. Check source IP in the attacks table \u2192 block persistent offenders in AdGuard or router firewall. |\n| **Misc Attack** | \ud83d\udfe0 Medium | Targeted attack pattern. Review source IP \u2014 if external and repeated, block it. |\n| **Attempted Denial of Service** | \ud83d\udfe1 Low (internal) | Usually your server doing UPnP/SSDP to the router. Suppressed going forward. If external source, investigate. |\n| **Generic Protocol Command Decode** | \ud83d\udfe1 Low | HTTP protocol anomalies. Usually benign \u2014 check destination if unfamiliar. |\n| **Device Retrieving External IP Address** | \u26aa Info | Something checked its public IP. Normal for Docker containers. |\n| **Potential Corporate Privacy Violation** | \u26aa Info | BitTorrent (Transmission). Suppressed going forward. |\n| **Misc activity** | \u26aa Info | DNS over HTTPS, Go clients, etc. All suppressed going forward. |\n| **Not Suspicious Traffic** | \u26aa Info | APT package manager. Suppressed. |\n\n> **Priority 1** alerts after suppression = genuinely suspicious. Investigate immediately.  \n> **Priority 2** alerts = elevated concern, review within the day.\n",
+        "mode": "markdown"
+      },
+      "title": "Alert Classification Guide \u2014 What to Investigate",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left"
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "src_ip"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Attacker IP"
+              },
+              {
+                "id": "custom.width",
+                "value": 180
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Lookup IP",
+                    "url": "https://www.abuseipdb.com/check/${__value.raw}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Hits"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2495C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "id": 11,
+      "options": {
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Value"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "sum by (src_ip) (count_over_time({job=\"suricata\"} |~ \"Web Application Attack\" | regexp `\\{[A-Z]+\\} (?P<src_ip>[0-9.]+):\\d+ ->` [$__range]))",
+          "legendFormat": "",
+          "queryType": "instant"
+        }
+      ],
+      "title": "Web Application Attacks \u2014 Source IPs to Block",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": [
+              {
+                "desc": true,
+                "displayName": "Value"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "id": 12,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "{job=\"suricata\"} |~ \"\\\\[Priority: [12]\\\\]\"",
+          "legendFormat": "High Priority",
+          "queryType": "range"
+        }
+      ],
+      "title": "Priority 1 & 2 Alert Feed \u2014 Act on These",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "dfkv1qgv9hvr4f"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 47
+      },
+      "id": 13,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "dfkv1qgv9hvr4f"
+          },
+          "editorMode": "code",
+          "expr": "{job=\"suricata\"}",
+          "legendFormat": "Alerts",
+          "queryType": "range"
+        }
+      ],
+      "title": "Live Alert Feed \u2014 All",
+      "type": "logs"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": [
+    "security",
+    "suricata",
+    "ids"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "Suricata IDS \u2014 Homelab",
+  "uid": "suricata-homelab",
+  "version": 2
+}

@@ -1,0 +1,30 @@
+# Databases
+*.db
+*.sqlite
+*.db-wal
+*.db-shm
+
+# Logs
+*.log
+logs/
+
+# Secrets
+secrets/
+*.key
+*.pem
+*.crt
+auth.db
+cache.db
+.env
+*.env
+!.env.example
+
+# Large media/cache
+*.mp4
+*.mkv
+*.avi
+cache/
+
+# OS
+.DS_Store
+Thumbs.db

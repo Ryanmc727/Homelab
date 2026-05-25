@@ -1,0 +1,20 @@
+theme: dark
+color: teal
+
+layout:
+  Infrastructure:
+    style: row
+    columns: 4
+  Security:
+    style: row
+    columns: 5
+  Network:
+    style: row
+    columns: 2
+  Tools:
+    style: row
+    columns: 2
+
+providers:
+  openweathermap: openweathermapapikey
+  weatherapi: weatherapiapikey
